@@ -1,28 +1,32 @@
 <?php
-define("ROOT",dirname(__DIR__));
+/**
+ * Application configuration.
+ */
 
+// Absolute path to the backend directory.
+define('BACKEND_PATH', dirname(__DIR__));
 
-define("IS_LOCALHOST", in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1']));
-define("SSL", !IS_LOCALHOST);
-define("DOMAIN", $_SERVER['HTTP_HOST']);
-define("FILE_NAME", IS_LOCALHOST ? "mohamedamineelhadani" : "");
+// Show detailed errors while developing; set to false in production.
+define('APP_DEBUG', true);
+define('APP_NAME', 'HappyShop');
 
+// Comma separated list of allowed CORS origins, or '*' for any.
+define('ALLOWED_ORIGINS', '*');
 
-define("DEBUG", true);
-ini_set("display_errors", DEBUG ? 1 : 0);
-error_reporting(DEBUG ? E_ALL : 0);
+// Store settings.
+define('CURRENCY', 'MAD');
+define('SHIPPING_COST', 30);      // flat shipping fee
+define('FREE_SHIPPING_FROM', 500); // subtotal from which shipping is free
 
+// Secret used to sign admin auth tokens. Change this in production.
+define('SECRET_KEY', 'change-me-happyshop-secret');
 
+if (APP_DEBUG) {
+    ini_set('display_errors', '1');
+    error_reporting(E_ALL);
+} else {
+    ini_set('display_errors', '0');
+    error_reporting(0);
+}
 
-$protocol = SSL ? "https" : "http";
-$basePath = FILE_NAME ? "/" . FILE_NAME : "";
-define("BASE_URL", "$protocol://" . DOMAIN . $basePath . "/");
-
-
-define("ADMIN_NAME", "Mohamed Amine El Hadani");
-define("ADMIN_EMAIL", "elhadanimohamedamine@gmail.com");
-
-// ---------- Security ----------
-define('SECRET_KEY', '@@@9090');
-
-?>
+date_default_timezone_set('Africa/Casablanca');

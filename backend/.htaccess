@@ -1,24 +1,19 @@
 RewriteEngine On
-RewriteBase /happyChop/backend
 
-# Redirect all requests to index.php
+# Forward the Authorization header to PHP (Apache strips it by default).
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Send every request that is not a real file or directory to index.php.
+# No RewriteBase is used so the API keeps working wherever the project lives.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
+RewriteRule ^ index.php [QSA,L]
 
-# Prevent directory listing
+# Disable directory listing.
 Options -Indexes
 
-# Protect sensitive files
-<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql)$">
-    Order Allow,Deny
-    Deny from all
+# Never serve source or data files.
+<FilesMatch "\.(sql|log|ini|md|json)$">
+    Require all denied
 </FilesMatch>
-
-# Enable CORS headers (fallback if PHP doesn't handle it)
-<IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin "*"
-    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
-</IfModule>
-

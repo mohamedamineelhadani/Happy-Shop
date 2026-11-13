@@ -1,42 +1,97 @@
 <?php
-class Controller{
 
-    public function model($model){
-        $modelPath = __DIR__."/../models/".$model.".php";
-        if(file_exists($modelPath)){
-            require_once $modelPath;
-            return new $model();
-        }else{
-            die("the model $model is not exist");
-        }
-    }
-
-    public function json($data, $statusCode = 200) {
-        http_response_code($statusCode);
+/**
+ * Base controller: JSON responses, request parsing and validation.
+ */
+abstract class Controller
+{
+    /** Emit a JSON response and stop. */
+    protected function json($data, int $status = 200): void
+    {
+        http_response_code($status);
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit;
     }
 
-    public function success($data = [], $message = 'Success') {
+    protected function success($data = null, string $message = 'OK', int $status = 200): void
+    {
         $this->json([
             'success' => true,
             'message' => $message,
-            'data' => $data
-        ]);
+            'data'    => $data,
+        ], $status);
     }
 
-    public function error($message = 'Error', $statusCode = 400) {
-        $this->json([
+    protected function error(string $message, int $status = 400, $errors = null): void
+    {
+        $payload = [
             'success' => false,
-            'message' => $message
-        ], $statusCode);
+            'message' => $message,
+        ];
+
+        if ($errors !== null) {
+            $payload['errors'] = $errors;
+        }
+
+        $this->json($payload, $status);
     }
 
-    public function validateRequest($method) {
-        if ($_SERVER['REQUEST_METHOD'] !== $method) {
-            $this->error('Method not allowed', 405);
+    /** Decoded request body (JSON, form or multipart). */
+    protected function body(): array
+    {
+        static $cached = null;
+
+        if ($cached !== null) {
+            return $cached;
         }
+
+        $raw = file_get_contents('php://input') ?: '';
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+
+        if ($raw !== '' && stripos($contentType, 'application/json') !== false) {
+            $decoded = json_decode($raw, true);
+            return $cached = is_array($decoded) ? $decoded : [];
+        }
+
+        if ($_POST !== []) {
+            return $cached = $_POST;
+        }
+
+        if ($raw !== '') {
+            parse_str($raw, $parsed);
+            return $cached = is_array($parsed) ? $parsed : [];
+        }
+
+        return $cached = [];
+    }
+
+    protected function input(string $key, $default = null)
+    {
+        return $this->body()[$key] ?? $default;
+    }
+
+    protected function query(string $key, $default = null)
+    {
+        return $_GET[$key] ?? $default;
+    }
+
+    /**
+     * Validate the request body against a rule set. On failure a 422 is sent
+     * immediately and the script exits.
+     *
+     * @param array<string, string> $rules
+     * @return array the validated body
+     */
+    protected function validate(array $rules): array
+    {
+        $data = $this->body();
+        $errors = Validator::check($data, $rules);
+
+        if ($errors !== []) {
+            $this->error('Please check the highlighted fields.', 422, $errors);
+        }
+
+        return $data;
     }
 }
-?>

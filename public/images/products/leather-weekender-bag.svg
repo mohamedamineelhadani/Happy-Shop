@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900" role="img" aria-label="Leather Weekender Bag">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#15151a"/>
+      <stop offset="1" stop-color="#08080a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.36" r="0.72">
+      <stop offset="0" stop-color="#d4af37" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#d4af37" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8ecc0"/>
+      <stop offset="0.5" stop-color="#d4af37"/>
+      <stop offset="1" stop-color="#9c7718"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="900" fill="url(#bg)"/>
+  <rect width="900" height="900" fill="url(#glow)"/>
+  <g opacity="0.6" stroke="url(#gold)" fill="none">
+    <circle cx="450" cy="350" r="132" stroke-width="1.6"/>
+    <circle cx="450" cy="350" r="176" stroke-width="0.8" opacity="0.45"/>
+  </g>
+  <text x="450" y="350" text-anchor="middle" dominant-baseline="central"
+        font-family="Georgia, 'Times New Roman', serif" font-size="150" fill="url(#gold)">L</text>
+  <g font-family="Georgia, 'Times New Roman', serif" font-size="46" fill="#f4f1e8" text-anchor="middle">
+    <text x="450" y="620"><tspan x="450" dy="0">Leather Weekender</tspan><tspan x="450" dy="58">Bag</tspan></text>
+  </g>
+  <text x="450" y="752" text-anchor="middle"
+        font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="8"
+        fill="#d4af37" opacity="0.85">HAPPYSHOP</text>
+</svg>

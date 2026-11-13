@@ -1,17 +1,25 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
-import "./animation.css";
-import "./../public/fontawesome-free-7.1.0-web/css/fontawesome.min.css";
-import "./../public/fontawesome-free-7.1.0-web/css/solid.min.css";
-import "./../public/fontawesome-free-7.1.0-web/css/brands.min.css";
-import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
+import App from "./App.jsx";
+import { ToastProvider } from "./context/ToastContext.jsx";
+import { CartProvider } from "./context/CartContext.jsx";
 
-createRoot(document.body).render(
-  <BrowserRouter>
-    <StrictMode>
-      <App />
-    </StrictMode>
-  </BrowserRouter>
+import "./styles/tokens.css";
+import "./styles/base.css";
+import "./styles/animations.css";
+import "./styles/layout.css";
+import "./styles/components.css";
+import "./styles/pages.css";
+
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <BrowserRouter>
+      <ToastProvider>
+        <CartProvider>
+          <App />
+        </CartProvider>
+      </ToastProvider>
+    </BrowserRouter>
+  </StrictMode>
 );
