@@ -1,0 +1,152 @@
+.shopping-card {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 400px;
+  height: 100vh;
+  background-color:var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  border-right: 2px solid var(--primary-color);
+  overflow: hidden;
+  animation: slideRight 0.6s ease-out;
+}
+
+.card-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  background-color:var(--light-color);
+  color: var(--primary-color);
+}
+
+.card-header h1 {
+  font-size: 24px;
+
+}
+
+.card-header p {
+  font-size: 20px;
+}
+
+.card-header .close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+.card-commande {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 4px;
+  max-height: 100%;
+}
+
+.card-product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  background: var(--gradient-secondary);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px black;
+}
+.card-product:hover {
+  background: var(--gradient-primary);
+}
+
+
+.card-product img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+.card-product:hover img {
+  transform: scale(0.9);
+}
+.card-product .product-details {
+  flex: 1;
+  color: white;
+}
+
+.product-details h3 {
+  margin: 0;
+  font-size: 17px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-details p {
+  margin: 5px 0;
+  font-size: 17px;
+}
+
+.product-details span {
+  font-size: 18px;
+  color: #ffe600;
+}
+
+.remove-product {
+  background: var(--danger-color);
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 17px;
+  transition: background 0.3s ease;
+}
+
+.remove-product:hover {
+  background:var(--warning-color);
+  color: var(--danger-color);
+}
+
+.card-footer {
+  width: 100%;
+  padding: 15px;
+  border-top: 1px solid #ddd;
+  background-color: var(--bg-primary);
+  color: var(--primary-color);
+}
+
+.card-footer .total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.card-footer .buy {
+  width: 100%;
+  padding: 10px;
+  font-size: var(--txt-md);
+  border-radius: 5px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card-footer .skip {
+  width: 100%;
+  padding: 10px;
+  font-size: var(--txt-md);
+  border-radius: 5px;
+  font-weight: bold;
+}

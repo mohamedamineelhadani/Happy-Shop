@@ -1,0 +1,39 @@
+
+/* ===================loader=============== */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: var(--secondary-color);
+    color: var(--primary-color);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: sans-serif;
+    transition: opacity 0.5s ease;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid var(--middle-color);
+    border-top: 6px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#loaderText {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* ===================fin loader=============== */
