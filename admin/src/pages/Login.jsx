@@ -85,10 +85,6 @@ export default function Login() {
             {busy ? <Loading label="Signing in…" inline /> : "Sign in"}
           </button>
         </form>
-
-        <p className="login__hint">
-          Demo account — <code>admin@happyshop.test</code> / <code>admin123</code>
-        </p>
       </div>
     </div>
   );

@@ -45,7 +45,7 @@ export default function Home() {
     0
   );
 
-  const heroImages = featured.slice(0, 3);
+  const heroImages = featured.slice(0, 2);
   const promoImage = featured[1]?.image || featured[0]?.image || "";
 
   return (
