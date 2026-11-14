@@ -9,6 +9,7 @@ import Categories from "./pages/Categories";
 import CategoryDetail from "./pages/CategoryDetail";
 import Contact from "./pages/Contact";
 import Checkout from "./pages/Checkout";
+import Favorites from "./pages/Favorites";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/category/:slug" element={<CategoryDetail />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/favorites" element={<Favorites />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

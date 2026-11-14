@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Cart, Close, Menu, Search } from "../../lib/icons";
+import { Cart, Close, Heart, Menu, Search } from "../../lib/icons";
 import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 
 const LINKS = [
   { to: "/", label: "Home", end: true },
   { to: "/shop", label: "Shop" },
   { to: "/categories", label: "Categories" },
+  { to: "/favorites", label: "Favourites" },
   { to: "/contact", label: "Contact" },
 ];
 
 export default function Navbar() {
   const { count, openCart } = useCart();
+  const { count: wishCount } = useWishlist();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -52,6 +55,16 @@ export default function Navbar() {
             <Link to="/shop" className="icon-btn" aria-label="Browse the shop">
               <Search size={19} />
             </Link>
+            <Link
+              to="/favorites"
+              className="icon-btn"
+              aria-label={`Favourites, ${wishCount} saved`}
+            >
+              <Heart size={19} />
+              {wishCount > 0 ? (
+                <span className="icon-count">{wishCount > 99 ? "99+" : wishCount}</span>
+              ) : null}
+            </Link>
             <button
               type="button"
               className="icon-btn"
@@ -60,7 +73,7 @@ export default function Navbar() {
             >
               <Cart size={19} />
               {count > 0 ? (
-                <span className="cart-count">{count > 99 ? "99+" : count}</span>
+                <span className="icon-count">{count > 99 ? "99+" : count}</span>
               ) : null}
             </button>
             <button

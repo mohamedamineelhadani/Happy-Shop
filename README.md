@@ -20,9 +20,9 @@ happyChop/
 ├─ scripts/            generate-product-images.mjs
 └─ src/                React app
    ├─ components/      layout · ui · product · cart
-   ├─ pages/           Home · Shop · ProductDetail · Categories · CategoryDetail · Contact · Checkout · NotFound
+   ├─ pages/           Home · Shop · ProductDetail · Categories · CategoryDetail · Contact · Checkout · Favorites · NotFound
    ├─ services/        axios client + per-resource API modules
-   ├─ context/         Cart + Toast providers
+   ├─ context/         Cart + Wishlist + Toast providers
    ├─ hooks/           useApi
    ├─ lib/             format helpers + inline SVG icons
    └─ styles/          tokens · base · animations · layout · components · pages
@@ -78,14 +78,17 @@ Base path: `backend/api` → e.g. `http://localhost/<project>/backend/api`.
 | GET | `/api/categories/{slug}` | category + paginated products |
 | POST | `/api/orders` | `items: [{ product_id, quantity }]` — totals recalculated server-side |
 | POST | `/api/contacts` | contact message |
+| POST | `/api/subscribers` | newsletter sign-up (`email`) |
 | POST | `/api/auth/login` | admin credentials → bearer token |
 | GET | `/api/auth/me` | current admin |
 | GET | `/api/admin/stats` | dashboard totals (auth) |
+| POST | `/api/admin/uploads` | multipart image upload (`image`) → `{ url, filename, size, mime }` (auth) |
 | POST/PUT/DELETE | `/api/products`, `/api/products/{id}` | admin CRUD (auth) |
 | POST/PUT/DELETE | `/api/categories`, `/api/categories/{id}` | admin CRUD (auth) |
 | GET | `/api/orders`, `/api/orders/{reference}` | admin (auth) |
 | PUT | `/api/orders/{id}/status` | admin (auth) |
 | GET/PUT/DELETE | `/api/contacts`, `/api/contacts/{id}/read`, `/api/contacts/{id}` | admin (auth) |
+| GET/DELETE | `/api/subscribers`, `/api/subscribers/{id}` | admin (auth) |
 
 Responses use a `{ success, message, data }` envelope; lists return
 `data: { items, meta: { total, page, per_page, pages } }`.
@@ -105,6 +108,10 @@ Seeded admin login: **admin@happyshop.test / admin123**.
 ## Notes
 
 - Product images are locally generated on-brand SVGs so the storefront looks
-  complete offline; they can be replaced by real uploads later.
-- The admin panel (using `/api/auth/login` and the admin endpoints) is the next
-  phase.
+  complete offline. The admin dashboard can replace them: `POST /api/admin/uploads`
+  stores an image (JPG/PNG/WEBP/GIF, ≤5 MB) and returns its URL, which is then
+  saved on the product's `image` field via the product CRUD endpoints.
+- Favourites (the heart button) are stored per-browser in `localStorage`; they can
+  be moved server-side once customer accounts exist.
+- The admin panel (a separate app using `/api/auth/login` and the admin endpoints)
+  is the next phase.

@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS contacts;
+DROP TABLE IF EXISTS subscribers;
 DROP TABLE IF EXISTS admins;
 DROP TABLE IF EXISTS archive;
 DROP TABLE IF EXISTS contact;
@@ -127,6 +128,17 @@ CREATE TABLE contacts (
   is_read    TINYINT(1) NOT NULL DEFAULT 0,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY idx_contacts_read (is_read)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+--  Newsletter subscribers (footer "Stay in the loop")
+-- ------------------------------------------------------------
+CREATE TABLE subscribers (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  email      VARCHAR(200) NOT NULL,
+  is_active  TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_subscribers_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -270,6 +282,11 @@ INSERT INTO contacts (full_name, email, phone, subject, message, is_read) VALUES
   ('Mohamed Amine El Hadani', 'amine@example.com',    '+212600000001', 'Delivery times',   'Hello, I would like to ask about delivery times.', 1),
   ('Sara Ben Ali',            'sara@example.com',     '+212600000002', 'Product question', 'I want to know more details about the third product.', 0),
   ('Yassine El Idrissi',      'yassine@example.com',  '+212600000003', 'Payment issue',    'I had an issue with the payment. Please assist.', 0);
+
+INSERT INTO subscribers (email, is_active) VALUES
+  ('amine@example.com',    1),
+  ('sara@example.com',     1),
+  ('yassine@example.com',  0);
 
 -- Default admin login:  admin@happyshop.test  /  admin123
 INSERT INTO admins (name, email, password_hash, role) VALUES

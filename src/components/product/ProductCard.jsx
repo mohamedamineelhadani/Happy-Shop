@@ -2,21 +2,33 @@ import { Link } from "react-router-dom";
 import { Cart, Heart } from "../../lib/icons";
 import { discountPercent } from "../../lib/format";
 import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 import { useToast } from "../../context/ToastContext";
 import Rating from "../ui/Rating";
 import Price from "../ui/Price";
 
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
+  const { has, toggle } = useWishlist();
   const toast = useToast();
 
   const discount = discountPercent(product.price, product.old_price);
   const soldOut = product.stock <= 0;
+  const saved = has(product.id);
 
   function handleAdd() {
     if (soldOut) return;
     addItem(product, 1);
     toast.success(`${product.title} added to your bag.`, "Added to bag");
+  }
+
+  function handleWish() {
+    const added = toggle(product);
+    if (added) {
+      toast.success(`${product.title} saved to your favourites.`, "Saved");
+    } else {
+      toast.info(`${product.title} removed from your favourites.`, "Removed");
+    }
   }
 
   return (
@@ -38,10 +50,12 @@ export default function ProductCard({ product }) {
 
         <button
           type="button"
-          className="product-card__wish"
-          aria-label="Save for later"
+          className={`product-card__wish${saved ? " is-active" : ""}`}
+          aria-label={saved ? "Remove from favourites" : "Save for later"}
+          aria-pressed={saved}
+          onClick={handleWish}
         >
-          <Heart size={17} />
+          <Heart size={17} fill={saved ? "currentColor" : "none"} />
         </button>
 
         <div className="product-card__quick">

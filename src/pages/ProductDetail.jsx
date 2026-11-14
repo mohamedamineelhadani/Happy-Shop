@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Cart,
   Check,
+  Heart,
   Refresh,
   Shield,
   Sparkles,
@@ -13,6 +14,7 @@ import { formatDate } from "../lib/format";
 import { productService } from "../services";
 import useApi from "../hooks/useApi";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import { useToast } from "../context/ToastContext";
 import Rating from "../components/ui/Rating";
 import Price from "../components/ui/Price";
@@ -24,6 +26,7 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { has, toggle } = useWishlist();
   const toast = useToast();
 
   const { data, loading, error, refetch } = useApi(
@@ -69,6 +72,7 @@ export default function ProductDetail() {
   }
 
   const soldOut = product.stock <= 0;
+  const saved = has(product.id);
 
   function handleAdd(goToCheckout = false) {
     if (soldOut) return;
@@ -77,6 +81,15 @@ export default function ProductDetail() {
       navigate("/checkout");
     } else {
       toast.success(`${quantity} × ${product.title} added to your bag.`, "Added");
+    }
+  }
+
+  function handleWish() {
+    const added = toggle(product);
+    if (added) {
+      toast.success(`${product.title} saved to your favourites.`, "Saved");
+    } else {
+      toast.info(`${product.title} removed from your favourites.`, "Removed");
     }
   }
 
@@ -193,6 +206,15 @@ export default function ProductDetail() {
               disabled={soldOut}
             >
               Buy now
+            </button>
+            <button
+              type="button"
+              className={`btn btn-outline btn-icon${saved ? " is-saved" : ""}`}
+              onClick={handleWish}
+              aria-label={saved ? "Remove from favourites" : "Save to favourites"}
+              aria-pressed={saved}
+            >
+              <Heart size={20} fill={saved ? "currentColor" : "none"} />
             </button>
           </div>
 

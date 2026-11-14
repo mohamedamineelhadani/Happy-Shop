@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Mail, MapPin, Phone, Twitter } from "../../lib/icons";
+import { subscriberService } from "../../services";
 import { useToast } from "../../context/ToastContext";
 
 const SHOP_LINKS = [
@@ -20,12 +21,26 @@ const COMPANY_LINKS = [
 export default function Footer() {
   const toast = useToast();
   const [email, setEmail] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
 
-  function handleSubscribe(event) {
+  async function handleSubscribe(event) {
     event.preventDefault();
-    if (!email.trim()) return;
-    toast.success("You are on the list. Watch your inbox.", "Subscribed");
-    setEmail("");
+    const value = email.trim();
+    if (!value) return;
+
+    setSubscribing(true);
+    try {
+      const response = await subscriberService.subscribe({ email: value });
+      toast.success(
+        response?.message || "You are on the list. Watch your inbox.",
+        "Subscribed"
+      );
+      setEmail("");
+    } catch (error) {
+      toast.error(error.message, "Could not subscribe");
+    } finally {
+      setSubscribing(false);
+    }
   }
 
   return (
@@ -89,11 +104,17 @@ export default function Footer() {
                 className="input"
                 placeholder="you@email.com"
                 aria-label="Email address"
+                required
                 value={email}
+                disabled={subscribing}
                 onChange={(event) => setEmail(event.target.value)}
               />
-              <button type="submit" className="btn btn-gold btn-sm">
-                Join
+              <button
+                type="submit"
+                className="btn btn-gold btn-sm"
+                disabled={subscribing}
+              >
+                {subscribing ? "Joining…" : "Join"}
               </button>
             </form>
             <ul className="footer__links" style={{ marginTop: "1rem" }}>

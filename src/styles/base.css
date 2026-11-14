@@ -293,6 +293,12 @@ p {
   --btn-border: rgba(229, 72, 77, 0.4);
 }
 
+.btn.is-saved {
+  --btn-fg: var(--gold);
+  border-color: var(--gold);
+  background: rgba(212, 175, 55, 0.12);
+}
+
 .btn-sm {
   padding: 0.55rem 1.05rem;
   font-size: 0.8rem;

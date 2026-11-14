@@ -51,6 +51,7 @@ $router->post('/api/products/{slug}/reviews', 'ProductController', 'addReview');
 
 $router->post('/api/orders', 'OrderController', 'store');
 $router->post('/api/contacts', 'ContactController', 'store');
+$router->post('/api/subscribers', 'SubscriberController', 'store');
 
 // ---------------------------------------------------------------
 //  Authentication
@@ -78,5 +79,11 @@ $router->put('/api/orders/{id}/status', 'OrderController', 'updateStatus');
 $router->get('/api/contacts', 'ContactController', 'index');
 $router->put('/api/contacts/{id}/read', 'ContactController', 'markRead');
 $router->delete('/api/contacts/{id}', 'ContactController', 'destroy');
+
+$router->get('/api/subscribers', 'SubscriberController', 'index');
+$router->delete('/api/subscribers/{id}', 'SubscriberController', 'destroy');
+
+// Image uploads for products and other content (multipart/form-data).
+$router->post('/api/admin/uploads', 'UploadController', 'store');
 
 $router->dispatch();

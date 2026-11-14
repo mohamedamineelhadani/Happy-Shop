@@ -10,15 +10,17 @@ class StatsController extends Controller
         $products = new Product();
         $orders = new Order();
         $contacts = new Contact();
+        $subscribers = new Subscriber();
 
         $this->success([
             'totals' => [
-                'products'   => $products->count(),
-                'categories' => (new Category())->count(),
-                'orders'     => $orders->count(),
-                'messages'   => $contacts->count(),
-                'unread'     => $contacts->unreadCount(),
-                'revenue'    => $orders->revenue(),
+                'products'    => $products->count(),
+                'categories'  => (new Category())->count(),
+                'orders'      => $orders->count(),
+                'messages'    => $contacts->count(),
+                'unread'      => $contacts->unreadCount(),
+                'subscribers' => $subscribers->activeCount(),
+                'revenue'     => $orders->revenue(),
             ],
             'orders_by_status' => $orders->statusCounts(),
             'low_stock'        => $products->lowStock(),

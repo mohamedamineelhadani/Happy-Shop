@@ -21,6 +21,13 @@ define('FREE_SHIPPING_FROM', 500); // subtotal from which shipping is free
 // Secret used to sign admin auth tokens. Change this in production.
 define('SECRET_KEY', 'change-me-happyshop-secret');
 
+// Product image uploads (used by the admin dashboard).
+// Files are written into the front-end's public folder so they are served at
+// UPLOAD_URL. Adjust both if your deployment layout differs.
+define('UPLOAD_DIR', dirname(BACKEND_PATH) . '/public/images/products');
+define('UPLOAD_URL', '/images/products');
+define('UPLOAD_MAX_BYTES', 5 * 1024 * 1024); // 5 MB
+
 if (APP_DEBUG) {
     ini_set('display_errors', '1');
     error_reporting(E_ALL);
