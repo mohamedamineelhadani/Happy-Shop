@@ -50,7 +50,7 @@ export default function CategoryForm({ category, submitting, errors, onSubmit, o
           className="input"
           value={icon}
           onChange={(event) => setIcon(event.target.value)}
-          placeholder="watch"
+          placeholder="watch, headphones, shirt, laptop, sofa, bag"
         />
       </Field>
 

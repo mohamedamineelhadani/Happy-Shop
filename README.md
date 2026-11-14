@@ -1,43 +1,10 @@
 # HappyShop
-
-A luxury e-commerce storefront and a matching admin dashboard: two **React 19 +
+ e-commerce store with admin dashboard: two **React 19 +
 Vite** front ends talking to a hand-rolled **PHP MVC/DAO** API backed by
 **MariaDB/MySQL**.
 
 Dark, gold-accented design with a real animation system, a cart that persists to
 `localStorage`, and a service layer that mirrors the API one-to-one.
-
-```
-happyChop/
-├─ backend/            PHP API (front controller + router + MVC + DAO)
-│  ├─ config/          app config + database credentials + upload paths
-│  ├─ core/            Database, Model, Controller, Router, Validator, Auth, Str, Upload
-│  ├─ models/          Product, Category, Review, Order, Contact, Subscriber, Admin
-│  ├─ controllers/     Product, Category, Order, Contact, Subscriber, Upload, Auth, Stats
-│  ├─ middleware/      CORS
-│  ├─ public/          served static assets (product images live here)
-│  └─ index.php        autoloader + all routes
-├─ admin/              React admin dashboard (separate Vite app)
-│  ├─ src/
-│  │  ├─ components/   layout · ui · product · category
-│  │  ├─ pages/        Login · Dashboard · Products · ProductEdit · Categories · Orders · OrderDetail · Messages · Subscribers · Profile
-│  │  ├─ services/     axios client + per-resource API modules
-│  │  ├─ context/      Auth + Toast providers
-│  │  ├─ hooks/        useApi
-│  │  └─ lib/          format helpers + inline SVG icons
-│  └─ vite.config.js   dev server on :5174, proxies /api and /images
-├─ database/db.sql     schema + demo data (import this first)
-├─ public/             storefront static assets (favicon)
-├─ scripts/            generate-product-images.mjs
-└─ src/                React storefront
-   ├─ components/      layout · ui · product · cart
-   ├─ pages/           Home · Shop · ProductDetail · Categories · CategoryDetail · Contact · Checkout · Favorites · NotFound
-   ├─ services/        axios client + per-resource API modules
-   ├─ context/         Cart + Wishlist + Toast providers
-   ├─ hooks/           useApi
-   ├─ lib/             format helpers + inline SVG icons
-   └─ styles/          tokens · base · animations · layout · components · pages
-```
 
 ## Requirements
 
@@ -48,18 +15,8 @@ happyChop/
 
 ## Getting started
 
-1. **Create the database** (drops and recreates the `happyshop` tables):
+1. **Create the database** (create the `happyshop` database with tables file `database/db.sql`):
 
-   ```bash
-   mysql -u root < database/db.sql
-   ```
-
-   With XAMPP on Windows:
-
-   ```powershell
-   & "C:\xampp\mysql\bin\mysql.exe" -u root --default-character-set=utf8mb4 `
-     -e "source C:/xampp/htdocs/Portfolio projects/happyChop/database/db.sql"
-   ```
 
 2. **Configure credentials** in `backend/config/db.php` if they differ from the
    defaults (`localhost` / `root` / empty password / `happyshop`).
@@ -87,9 +44,15 @@ happyChop/
    It runs on <http://localhost:5174> and proxies `/api` to the same backend.
    Sign in with the seeded account below.
 
-## API
+6. **run the backend**
 
-Base path: `backend/api` → e.g. `http://localhost/<project>/backend/api`.
+  ```bash
+   cd backend
+   php -S localhost:8000
+   ```
+   It runs on <http://localhost:8000>
+
+## API
 
 | Method | Endpoint | Notes |
 | --- | --- | --- |
@@ -148,20 +111,3 @@ A separate Vite app in `admin/` that shares only the API. It covers:
 - **Messages** — read contact submissions and delete them.
 - **Subscribers** — review sign-ups and toggle their active status.
 - **Profile** — update your own name, email address and password.
-
-## Notes
-
-- Product images are locally generated on-brand SVGs so the storefront looks
-  complete offline. They live in `backend/public/images/products/` alongside
-  admin uploads: `POST /api/admin/uploads` stores an image (JPG/PNG/WEBP/GIF,
-  ≤5 MB) there and returns its URL, which is saved on the product's `image`
-  field via the product CRUD endpoints. Override the location with `UPLOAD_DIR` /
-  `UPLOAD_URL` in `backend/config/config.php`.
-- Both dev servers proxy `/images` to the backend's `public/` folder, so
-  `/images/products/...` resolves in the storefront and the admin dashboard. In
-  production, serve the backend's `public/` folder at `/images` (or point
-  `VITE_MEDIA_TARGET` at it).
-- Favourites (the heart button) are stored per-browser in `localStorage`; they can
-  be moved server-side once customer accounts exist.
-- Product status controls storefront visibility: `active` is live, `draft` and
-  `archived` are hidden.

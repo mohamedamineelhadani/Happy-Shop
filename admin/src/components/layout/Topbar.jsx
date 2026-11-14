@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ExternalLink, Menu } from "../../lib/icons";
 
 const TITLES = {
@@ -34,10 +34,15 @@ export default function Topbar({ onMenu }) {
 
       <h1 className="topbar__title">{resolveTitle(pathname)}</h1>
 
-      <Link to="/" className="btn btn-ghost btn-sm topbar__store" target="_blank" rel="noreferrer">
+      <a 
+        href={import.meta.env.VITE_STORE_URL || "/"} 
+        className="btn btn-ghost btn-sm topbar__store" 
+        target="_blank" 
+        rel="noopener noreferrer"
+      >
         <ExternalLink size={16} />
         View store
-      </Link>
+      </a>
     </header>
   );
 }

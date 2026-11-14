@@ -9,11 +9,8 @@ import react from "@vitejs/plugin-react";
 // proxied to the backend's public folder as well.
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const apiTarget =
-    env.VITE_API_TARGET ||
-    "http://localhost/Portfolio%20projects/happyChop/backend";
-  const mediaTarget =
-    env.VITE_MEDIA_TARGET || `${apiTarget.replace(/\/+$/, "")}/public`;
+  const apiTarget = env.VITE_API_TARGET;
+  const mediaTarget = env.VITE_MEDIA_TARGET;
 
   return {
     plugins: [react()],

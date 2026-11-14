@@ -36,7 +36,6 @@ export default function Sidebar({ open, onClose }) {
       <aside className={`sidebar${open ? " is-open" : ""}`}>
         <div className="sidebar__brand">
           <span className="brand">
-            <Logo size={30} />
             <span className="brand__name">
               Happy<span>Shop</span>
             </span>
