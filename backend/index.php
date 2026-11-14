@@ -63,6 +63,7 @@ $router->get('/api/auth/me', 'AuthController', 'me');
 //  Admin (all handlers require a valid token)
 // ---------------------------------------------------------------
 $router->get('/api/admin/stats', 'StatsController', 'index');
+$router->get('/api/admin/products', 'ProductController', 'adminIndex');
 
 $router->post('/api/products', 'ProductController', 'store');
 $router->put('/api/products/{id}', 'ProductController', 'update');

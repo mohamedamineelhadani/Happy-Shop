@@ -28,6 +28,20 @@ class ProductController extends Controller
         $this->success($result);
     }
 
+    /**
+     * GET /api/admin/products (admin)
+     * Lists every product, including drafts and archived ones.
+     */
+    public function adminIndex(): void
+    {
+        Auth::require();
+
+        $this->success($this->products->adminListing([
+            'search'      => $this->query('search'),
+            'category_id' => $this->query('category_id'),
+        ]));
+    }
+
     /** GET /api/products/{slug} */
     public function show(string $key): void
     {
