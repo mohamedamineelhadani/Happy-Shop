@@ -12,6 +12,8 @@ export const authService = {
   },
   /** GET /api/auth/me */
   me: () => client.get("/auth/me"),
+  /** PUT /api/auth/profile — update the signed-in admin's name/email/password. */
+  updateProfile: (payload) => client.put("/auth/profile", payload),
   logout: () => setToken(null),
   token: getToken,
 };
@@ -46,6 +48,7 @@ export const categoryService = {
 export const orderService = {
   list: (params = {}) => client.get("/orders", { params }),
   get: (reference) => client.get(`/orders/${encodeURIComponent(reference)}`),
+  update: (id, payload) => client.put(`/orders/${id}`, payload),
   updateStatus: (id, status) => client.put(`/orders/${id}/status`, { status }),
 };
 
@@ -59,6 +62,7 @@ export const contactService = {
 /** Newsletter subscribers. */
 export const subscriberService = {
   list: () => client.get("/subscribers"),
+  update: (id, payload) => client.put(`/subscribers/${id}`, payload),
   remove: (id) => client.delete(`/subscribers/${id}`),
 };
 

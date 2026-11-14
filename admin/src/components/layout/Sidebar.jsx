@@ -8,6 +8,7 @@ import {
   Logout,
   Mail,
   Package,
+  User,
   Users,
 } from "../../lib/icons";
 import { useAuth } from "../../context/AuthContext";
@@ -19,6 +20,7 @@ const NAV = [
   { to: "/orders", label: "Orders", icon: Cart },
   { to: "/messages", label: "Messages", icon: Mail },
   { to: "/subscribers", label: "Subscribers", icon: Users },
+  { to: "/profile", label: "Profile", icon: User },
 ];
 
 export default function Sidebar({ open, onClose }) {

@@ -8,6 +8,7 @@ const TITLES = {
   "/orders": "Orders",
   "/messages": "Messages",
   "/subscribers": "Subscribers",
+  "/profile": "Profile",
 };
 
 function resolveTitle(pathname) {

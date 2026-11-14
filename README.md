@@ -19,12 +19,12 @@ happyChop/
 ├─ admin/              React admin dashboard (separate Vite app)
 │  ├─ src/
 │  │  ├─ components/   layout · ui · product · category
-│  │  ├─ pages/        Login · Dashboard · Products · ProductEdit · Categories · Orders · OrderDetail · Messages · Subscribers
+│  │  ├─ pages/        Login · Dashboard · Products · ProductEdit · Categories · Orders · OrderDetail · Messages · Subscribers · Profile
 │  │  ├─ services/     axios client + per-resource API modules
 │  │  ├─ context/      Auth + Toast providers
 │  │  ├─ hooks/        useApi
 │  │  └─ lib/          format helpers + inline SVG icons
-│  └─ vite.config.js   dev server on :5174, proxies /api to the backend
+│  └─ vite.config.js   dev server on :5174, proxies /api, serves shared public/
 ├─ database/db.sql     schema + demo data (import this first)
 ├─ public/             static assets (product images, favicon)
 ├─ scripts/            generate-product-images.mjs
@@ -102,15 +102,17 @@ Base path: `backend/api` → e.g. `http://localhost/<project>/backend/api`.
 | POST | `/api/subscribers` | newsletter sign-up (`email`) |
 | POST | `/api/auth/login` | admin credentials → bearer token |
 | GET | `/api/auth/me` | current admin |
+| PUT | `/api/auth/profile` | update the signed-in admin's name/email/password (auth) |
 | GET | `/api/admin/stats` | dashboard totals (auth) |
 | GET | `/api/admin/products` | every product incl. drafts/archived (auth) |
 | POST | `/api/admin/uploads` | multipart image upload (`image`) → `{ url, filename, size, mime }` (auth) |
 | POST/PUT/DELETE | `/api/products`, `/api/products/{id}` | admin CRUD (auth) |
 | POST/PUT/DELETE | `/api/categories`, `/api/categories/{id}` | admin CRUD (auth) |
 | GET | `/api/orders`, `/api/orders/{reference}` | admin (auth) |
+| PUT | `/api/orders/{id}` | edit customer details (auth) |
 | PUT | `/api/orders/{id}/status` | admin (auth) |
 | GET/PUT/DELETE | `/api/contacts`, `/api/contacts/{id}/read`, `/api/contacts/{id}` | admin (auth) |
-| GET/DELETE | `/api/subscribers`, `/api/subscribers/{id}` | admin (auth) |
+| GET/PUT/DELETE | `/api/subscribers`, `/api/subscribers/{id}` | admin (auth) |
 
 Responses use a `{ success, message, data }` envelope; lists return
 `data: { items, meta: { total, page, per_page, pages } }`.
@@ -141,9 +143,10 @@ A separate Vite app in `admin/` that shares only the API. It covers:
 - **Products** — search/filter, create, edit, delete, and **image upload**
   (drag & drop or browse → `POST /api/admin/uploads`, with preview).
 - **Categories** — inline create/edit/delete.
-- **Orders** — filter, view details, and change status.
+- **Orders** — filter, change status inline, and edit customer details.
 - **Messages** — read contact submissions and delete them.
-- **Subscribers** — review newsletter sign-ups.
+- **Subscribers** — review sign-ups and toggle their active status.
+- **Profile** — update your own name, email address and password.
 
 ## Notes
 
@@ -152,6 +155,9 @@ A separate Vite app in `admin/` that shares only the API. It covers:
   stores an image (JPG/PNG/WEBP/GIF, ≤5 MB) into `public/images/products/` and
   returns its URL, which is saved on the product's `image` field via the product
   CRUD endpoints. Override the destination with `UPLOAD_DIR` / `UPLOAD_URL`.
+- The admin dev server serves that same `public/` folder (Vite `publicDir`), so
+  uploaded images appear in the dashboard as well as the storefront; the build
+  copies them into `admin/dist/images/`.
 - Favourites (the heart button) are stored per-browser in `localStorage`; they can
   be moved server-side once customer accounts exist.
 - Product status controls storefront visibility: `active` is live, `draft` and

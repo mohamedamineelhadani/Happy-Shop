@@ -10,6 +10,7 @@ import Orders from "./pages/Orders";
 import OrderDetail from "./pages/OrderDetail";
 import Messages from "./pages/Messages";
 import Subscribers from "./pages/Subscribers";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="/orders/:reference" element={<OrderDetail />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/subscribers" element={<Subscribers />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

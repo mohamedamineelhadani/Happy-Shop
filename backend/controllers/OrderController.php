@@ -104,6 +104,45 @@ class OrderController extends Controller
         $this->success($order);
     }
 
+    /** PUT /api/orders/{id} (admin) — edit the order's customer details. */
+    public function update(string $id): void
+    {
+        Auth::require();
+
+        if (!$this->orders->exists((int) $id)) {
+            $this->error('Order not found.', 404);
+        }
+
+        $data = $this->validate([
+            'customer_name' => 'string|maxlen:200',
+            'email'         => 'email|maxlen:200',
+            'phone'         => 'string|maxlen:50',
+            'address'       => 'string|maxlen:400',
+            'city'          => 'string|maxlen:120',
+            'note'          => 'string|maxlen:600',
+        ]);
+
+        $payload = [];
+
+        foreach (['customer_name', 'email', 'phone'] as $field) {
+            if (array_key_exists($field, $data) && trim((string) $data[$field]) !== '') {
+                $payload[$field] = trim((string) $data[$field]);
+            }
+        }
+
+        foreach (['address', 'city', 'note'] as $field) {
+            if (array_key_exists($field, $data)) {
+                $payload[$field] = Str::nullIfBlank($data[$field]);
+            }
+        }
+
+        if ($payload !== []) {
+            $this->orders->update((int) $id, $payload);
+        }
+
+        $this->success($this->orders->findWithItems((int) $id), 'Order updated.');
+    }
+
     /** PUT /api/orders/{id}/status (admin) */
     public function updateStatus(string $id): void
     {

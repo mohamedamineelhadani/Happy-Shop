@@ -10,11 +10,38 @@ import ConfirmDialog from "../components/ui/ConfirmDialog";
 
 export default function Subscribers() {
   const toast = useToast();
-  const { data, loading, error, refetch } = useApi(() => subscriberService.list(), []);
+  const { data, loading, error, refetch, setData } = useApi(() => subscriberService.list(), []);
   const [pendingDelete, setPendingDelete] = useState(null);
+  const [savingId, setSavingId] = useState(null);
 
   const subscribers = data?.data ?? [];
   const activeCount = subscribers.filter((subscriber) => subscriber.is_active).length;
+
+  async function toggleActive(subscriber) {
+    const next = !subscriber.is_active;
+    setSavingId(subscriber.id);
+    try {
+      await subscriberService.update(subscriber.id, { is_active: next });
+      setData((prev) =>
+        prev
+          ? {
+              ...prev,
+              data: prev.data.map((row) =>
+                row.id === subscriber.id ? { ...row, is_active: next } : row
+              ),
+            }
+          : prev
+      );
+      toast.success(
+        next ? "Subscriber reactivated." : "Subscriber marked as unsubscribed.",
+        "Updated"
+      );
+    } catch (err) {
+      toast.error(err.message, "Could not update");
+    } finally {
+      setSavingId(null);
+    }
+  }
 
   async function handleDelete() {
     if (!pendingDelete) return;
@@ -62,9 +89,16 @@ export default function Subscribers() {
                   <tr key={subscriber.id}>
                     <td>{subscriber.email}</td>
                     <td>
-                      <span className={`pill pill--${subscriber.is_active ? "active" : "archived"}`}>
-                        {subscriber.is_active ? "Active" : "Unsubscribed"}
-                      </span>
+                      <label className="switch-field switch-field--inline">
+                        <input
+                          type="checkbox"
+                          checked={subscriber.is_active}
+                          disabled={savingId === subscriber.id}
+                          onChange={() => toggleActive(subscriber)}
+                        />
+                        <span className="switch" aria-hidden="true" />
+                        <span>{subscriber.is_active ? "Active" : "Unsubscribed"}</span>
+                      </label>
                     </td>
                     <td className="ta-right dim">{formatDate(subscriber.created_at)}</td>
                     <td className="ta-right">

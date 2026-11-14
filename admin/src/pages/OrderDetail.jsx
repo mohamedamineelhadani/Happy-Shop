@@ -3,9 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import { orderService } from "../services";
 import { useToast } from "../context/ToastContext";
 import { formatAmount, formatDate, formatPrice, ORDER_STATUSES, titleCase } from "../lib/format";
-import { ChevronLeft, Mail, MapPin, Phone } from "../lib/icons";
+import { ChevronLeft, Edit, Mail, MapPin, Phone } from "../lib/icons";
 import Loading from "../components/ui/Loading";
 import StatusPill from "../components/ui/StatusPill";
+import Modal from "../components/ui/Modal";
+import Field from "../components/ui/Field";
 
 export default function OrderDetail() {
   const { reference } = useParams();
@@ -15,6 +17,10 @@ export default function OrderDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updating, setUpdating] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState(null);
+  const [formErrors, setFormErrors] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -46,6 +52,47 @@ export default function OrderDetail() {
       toast.error(err.message, "Could not update");
     } finally {
       setUpdating(false);
+    }
+  }
+
+  function openEditor() {
+    setForm({
+      customer_name: order.customer_name ?? "",
+      email: order.email ?? "",
+      phone: order.phone ?? "",
+      address: order.address ?? "",
+      city: order.city ?? "",
+      note: order.note ?? "",
+    });
+    setFormErrors(null);
+    setEditing(true);
+  }
+
+  function setField(key, value) {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function saveDetails(event) {
+    event.preventDefault();
+    setSaving(true);
+    setFormErrors(null);
+    try {
+      const response = await orderService.update(order.id, {
+        customer_name: form.customer_name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        address: form.address.trim(),
+        city: form.city.trim(),
+        note: form.note.trim(),
+      });
+      setOrder(response.data);
+      setEditing(false);
+      toast.success("Order details updated.", "Saved");
+    } catch (err) {
+      setFormErrors(err.errors);
+      toast.error(err.message, "Could not save");
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -85,7 +132,13 @@ export default function OrderDetail() {
 
         <div className="grid-2">
           <div className="panel panel--nested">
-            <h3>Customer</h3>
+            <div className="panel__head panel__head--tight">
+              <h3>Customer</h3>
+              <button type="button" className="btn btn-ghost btn-sm" onClick={openEditor}>
+                <Edit size={16} />
+                Edit details
+              </button>
+            </div>
             <ul className="detail-list">
               <li>
                 <strong>{order.customer_name}</strong>
@@ -157,6 +210,92 @@ export default function OrderDetail() {
           </table>
         </div>
       </section>
+
+      <Modal
+        open={editing}
+        title="Edit order details"
+        onClose={saving ? undefined : () => setEditing(false)}
+        footer={
+          <>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => setEditing(false)}
+              disabled={saving}
+            >
+              Cancel
+            </button>
+            <button type="submit" form="order-details-form" className="btn btn-gold" disabled={saving}>
+              {saving ? <Loading label="Saving…" inline /> : "Save changes"}
+            </button>
+          </>
+        }
+      >
+        {form ? (
+          <form id="order-details-form" className="form" onSubmit={saveDetails}>
+            <Field label="Customer name" htmlFor="o-name" error={formErrors?.customer_name}>
+              <input
+                id="o-name"
+                className="input"
+                value={form.customer_name}
+                onChange={(event) => setField("customer_name", event.target.value)}
+                required
+              />
+            </Field>
+
+            <div className="form__row">
+              <Field label="Email" htmlFor="o-email" error={formErrors?.email}>
+                <input
+                  id="o-email"
+                  type="email"
+                  className="input"
+                  value={form.email}
+                  onChange={(event) => setField("email", event.target.value)}
+                  required
+                />
+              </Field>
+              <Field label="Phone" htmlFor="o-phone" error={formErrors?.phone}>
+                <input
+                  id="o-phone"
+                  className="input"
+                  value={form.phone}
+                  onChange={(event) => setField("phone", event.target.value)}
+                  required
+                />
+              </Field>
+            </div>
+
+            <div className="form__row">
+              <Field label="Address" htmlFor="o-address" error={formErrors?.address}>
+                <input
+                  id="o-address"
+                  className="input"
+                  value={form.address}
+                  onChange={(event) => setField("address", event.target.value)}
+                />
+              </Field>
+              <Field label="City" htmlFor="o-city" error={formErrors?.city}>
+                <input
+                  id="o-city"
+                  className="input"
+                  value={form.city}
+                  onChange={(event) => setField("city", event.target.value)}
+                />
+              </Field>
+            </div>
+
+            <Field label="Note" htmlFor="o-note" error={formErrors?.note}>
+              <textarea
+                id="o-note"
+                className="input textarea"
+                rows={3}
+                value={form.note}
+                onChange={(event) => setField("note", event.target.value)}
+              />
+            </Field>
+          </form>
+        ) : null}
+      </Modal>
     </div>
   );
 }

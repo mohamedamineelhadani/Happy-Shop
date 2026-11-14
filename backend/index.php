@@ -58,6 +58,7 @@ $router->post('/api/subscribers', 'SubscriberController', 'store');
 // ---------------------------------------------------------------
 $router->post('/api/auth/login', 'AuthController', 'login');
 $router->get('/api/auth/me', 'AuthController', 'me');
+$router->put('/api/auth/profile', 'AuthController', 'updateProfile');
 
 // ---------------------------------------------------------------
 //  Admin (all handlers require a valid token)
@@ -75,6 +76,7 @@ $router->delete('/api/categories/{id}', 'CategoryController', 'destroy');
 
 $router->get('/api/orders', 'OrderController', 'index');
 $router->get('/api/orders/{reference}', 'OrderController', 'show');
+$router->put('/api/orders/{id}', 'OrderController', 'update');
 $router->put('/api/orders/{id}/status', 'OrderController', 'updateStatus');
 
 $router->get('/api/contacts', 'ContactController', 'index');
@@ -82,6 +84,7 @@ $router->put('/api/contacts/{id}/read', 'ContactController', 'markRead');
 $router->delete('/api/contacts/{id}', 'ContactController', 'destroy');
 
 $router->get('/api/subscribers', 'SubscriberController', 'index');
+$router->put('/api/subscribers/{id}', 'SubscriberController', 'update');
 $router->delete('/api/subscribers/{id}', 'SubscriberController', 'destroy');
 
 // Image uploads for products and other content (multipart/form-data).

@@ -45,6 +45,48 @@ class SubscriberController extends Controller
         $this->success($this->subscribers->adminListing());
     }
 
+    /** PUT /api/subscribers/{id} (admin) — toggle activity / edit the email. */
+    public function update(string $id): void
+    {
+        Auth::require();
+
+        if (!$this->subscribers->exists((int) $id)) {
+            $this->error('Subscriber not found.', 404);
+        }
+
+        $data = $this->validate([
+            'email' => 'email|maxlen:200',
+        ]);
+
+        $payload = [];
+
+        if (array_key_exists('is_active', $data)) {
+            $payload['is_active'] = $data['is_active'] ? 1 : 0;
+        }
+
+        if (array_key_exists('email', $data) && trim((string) $data['email']) !== '') {
+            $email = strtolower(trim((string) $data['email']));
+            $existing = $this->subscribers->findByEmail($email);
+
+            if ($existing !== null && (int) $existing['id'] !== (int) $id) {
+                $this->error('Please check the highlighted fields.', 422, [
+                    'email' => 'That email is already subscribed.',
+                ]);
+            }
+
+            $payload['email'] = $email;
+        }
+
+        if ($payload !== []) {
+            $this->subscribers->update((int) $id, $payload);
+        }
+
+        $this->success(
+            $this->subscribers->present($this->subscribers->find((int) $id) ?? []),
+            'Subscriber updated.'
+        );
+    }
+
     /** DELETE /api/subscribers/{id} (admin) */
     public function destroy(string $id): void
     {

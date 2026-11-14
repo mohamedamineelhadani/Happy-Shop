@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { orderService } from "../services";
 import useApi from "../hooks/useApi";
+import { useToast } from "../context/ToastContext";
 import { formatAmount, formatDate, ORDER_STATUSES, titleCase } from "../lib/format";
 import { Cart, Search } from "../lib/icons";
 import Loading from "../components/ui/Loading";
@@ -9,11 +10,13 @@ import EmptyState from "../components/ui/EmptyState";
 import StatusPill from "../components/ui/StatusPill";
 
 export default function Orders() {
+  const toast = useToast();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [query, setQuery] = useState({ search: "", status: "" });
+  const [savingId, setSavingId] = useState(null);
 
-  const { data, loading, error } = useApi(
+  const { data, loading, error, setData } = useApi(
     () =>
       orderService.list({
         search: query.search || undefined,
@@ -27,6 +30,29 @@ export default function Orders() {
   function applyFilters(event) {
     event.preventDefault();
     setQuery({ search: search.trim(), status });
+  }
+
+  async function changeStatus(order, nextStatus) {
+    if (nextStatus === order.status) return;
+    setSavingId(order.id);
+    try {
+      await orderService.updateStatus(order.id, nextStatus);
+      setData((prev) =>
+        prev
+          ? {
+              ...prev,
+              data: prev.data.map((row) =>
+                row.id === order.id ? { ...row, status: nextStatus } : row
+              ),
+            }
+          : prev
+      );
+      toast.success(`${order.reference} marked as ${nextStatus}.`, "Status updated");
+    } catch (err) {
+      toast.error(err.message, "Could not update status");
+    } finally {
+      setSavingId(null);
+    }
   }
 
   return (
@@ -91,7 +117,22 @@ export default function Orders() {
                       </div>
                     </td>
                     <td>
-                      <StatusPill status={order.status} />
+                      <div className="status-cell">
+                        <StatusPill status={order.status} />
+                        <select
+                          className="input input--sm"
+                          value={order.status}
+                          disabled={savingId === order.id}
+                          onChange={(event) => changeStatus(order, event.target.value)}
+                          aria-label={`Change status for ${order.reference}`}
+                        >
+                          {ORDER_STATUSES.map((option) => (
+                            <option key={option} value={option}>
+                              {titleCase(option)}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </td>
                     <td className="ta-right">{order.item_count}</td>
                     <td className="ta-right">{formatAmount(order.total)}</td>

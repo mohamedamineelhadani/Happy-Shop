@@ -202,7 +202,9 @@ code {
   padding: 0.15rem 0.5rem;
 }
 
-.sidebar__close {
+/* Hidden on desktop; shown only when the sidebar becomes an overlay. The
+   `.sidebar` ancestor keeps this rule more specific than `.icon-btn`. */
+.sidebar .sidebar__close {
   display: none;
 }
 
@@ -424,6 +426,28 @@ select.input {
   min-height: 90px;
 }
 
+/* Compact control used for inline editing inside tables. */
+.input--sm {
+  width: auto;
+  min-width: 9.5rem;
+  padding: 0.34rem 0.6rem;
+  font-size: 0.82rem;
+}
+select.input--sm {
+  padding-right: 1.8rem;
+  background-position: right 0.55rem center;
+}
+
+.status-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.switch-field--inline {
+  margin-bottom: 0;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -593,6 +617,9 @@ select.input {
   box-shadow: none;
   border-radius: var(--radius);
 }
+.panel--narrow {
+  max-width: 680px;
+}
 .panel--nested h3,
 .section-label {
   font-size: 0.95rem;
@@ -615,6 +642,31 @@ select.input {
 }
 .panel__head .dim {
   font-size: 0.82rem;
+}
+.panel__head--tight {
+  margin-bottom: 0.5rem;
+}
+.panel__head--tight h3 {
+  margin-bottom: 0;
+}
+
+.profile-id {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.4rem;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.profile-id__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.profile-id__info small {
+  text-transform: capitalize;
 }
 
 .stat-grid {
@@ -1297,7 +1349,7 @@ a.stat-card:hover {
   .sidebar.is-open {
     transform: translateX(0);
   }
-  .sidebar__close {
+  .sidebar .sidebar__close {
     display: inline-grid;
   }
   .sidebar__scrim {

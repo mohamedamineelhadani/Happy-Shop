@@ -21,10 +21,11 @@ export default function Dashboard() {
   if (loading) return <Loading label="Loading dashboard…" />;
   if (error) return <div className="alert alert--error">{error.message}</div>;
 
-  const totals = data?.totals ?? {};
-  const byStatus = data?.orders_by_status ?? {};
-  const lowStock = data?.low_stock ?? [];
-  const recent = data?.recent_orders ?? [];
+  const stats = data?.data ?? {};
+  const totals = stats.totals ?? {};
+  const byStatus = stats.orders_by_status ?? {};
+  const lowStock = stats.low_stock ?? [];
+  const recent = stats.recent_orders ?? [];
   const maxStatus = Math.max(1, ...Object.values(byStatus));
 
   const cards = [

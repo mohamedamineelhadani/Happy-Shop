@@ -68,6 +68,13 @@ export const Users = (p) => (
   </Svg>
 );
 
+export const User = (p) => (
+  <Svg {...p}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4.5 20.5v-.8a5.5 5.5 0 0 1 5.5-5.5h4a5.5 5.5 0 0 1 5.5 5.5v.8" />
+  </Svg>
+);
+
 export const Logout = (p) => (
   <Svg {...p}>
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
