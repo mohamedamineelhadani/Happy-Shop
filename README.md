@@ -15,6 +15,7 @@ happyChop/
 │  ├─ models/          Product, Category, Review, Order, Contact, Subscriber, Admin
 │  ├─ controllers/     Product, Category, Order, Contact, Subscriber, Upload, Auth, Stats
 │  ├─ middleware/      CORS
+│  ├─ public/          served static assets (product images live here)
 │  └─ index.php        autoloader + all routes
 ├─ admin/              React admin dashboard (separate Vite app)
 │  ├─ src/
@@ -24,9 +25,9 @@ happyChop/
 │  │  ├─ context/      Auth + Toast providers
 │  │  ├─ hooks/        useApi
 │  │  └─ lib/          format helpers + inline SVG icons
-│  └─ vite.config.js   dev server on :5174, proxies /api, serves shared public/
+│  └─ vite.config.js   dev server on :5174, proxies /api and /images
 ├─ database/db.sql     schema + demo data (import this first)
-├─ public/             static assets (product images, favicon)
+├─ public/             storefront static assets (favicon)
 ├─ scripts/            generate-product-images.mjs
 └─ src/                React storefront
    ├─ components/      layout · ui · product · cart
@@ -151,13 +152,15 @@ A separate Vite app in `admin/` that shares only the API. It covers:
 ## Notes
 
 - Product images are locally generated on-brand SVGs so the storefront looks
-  complete offline. The admin dashboard replaces them: `POST /api/admin/uploads`
-  stores an image (JPG/PNG/WEBP/GIF, ≤5 MB) into `public/images/products/` and
-  returns its URL, which is saved on the product's `image` field via the product
-  CRUD endpoints. Override the destination with `UPLOAD_DIR` / `UPLOAD_URL`.
-- The admin dev server serves that same `public/` folder (Vite `publicDir`), so
-  uploaded images appear in the dashboard as well as the storefront; the build
-  copies them into `admin/dist/images/`.
+  complete offline. They live in `backend/public/images/products/` alongside
+  admin uploads: `POST /api/admin/uploads` stores an image (JPG/PNG/WEBP/GIF,
+  ≤5 MB) there and returns its URL, which is saved on the product's `image`
+  field via the product CRUD endpoints. Override the location with `UPLOAD_DIR` /
+  `UPLOAD_URL` in `backend/config/config.php`.
+- Both dev servers proxy `/images` to the backend's `public/` folder, so
+  `/images/products/...` resolves in the storefront and the admin dashboard. In
+  production, serve the backend's `public/` folder at `/images` (or point
+  `VITE_MEDIA_TARGET` at it).
 - Favourites (the heart button) are stored per-browser in `localStorage`; they can
   be moved server-side once customer accounts exist.
 - Product status controls storefront visibility: `active` is live, `draft` and

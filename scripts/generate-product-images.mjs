@@ -1,8 +1,9 @@
 // Generates on-brand SVG placeholder images for every product in database/db.sql
-// into public/images/products/. Run with:  node scripts/generate-product-images.mjs
+// into backend/public/images/products/. Run with:
+//   node scripts/generate-product-images.mjs
 //
-// Keeping the artwork local means the storefront looks complete offline and the
-// admin panel can replace these files with real uploads later.
+// Images live with the backend (see UPLOAD_DIR in backend/config/config.php) so
+// they are served from one place; the storefront and admin proxy /images there.
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -87,11 +88,11 @@ function svg({ title }) {
 `;
 }
 
-const outDir = join(root, "public", "images", "products");
+const outDir = join(root, "backend", "public", "images", "products");
 mkdirSync(outDir, { recursive: true });
 
 for (const product of products) {
   writeFileSync(join(outDir, `${product.slug}.svg`), svg(product), "utf8");
 }
 
-console.log(`Generated ${products.length} product images in public/images/products/`);
+console.log(`Generated ${products.length} product images in backend/public/images/products/`);

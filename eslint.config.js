@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'admin/dist']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -35,7 +35,7 @@ export default defineConfig([
   },
   {
     // Build tooling and scripts run in Node, not the browser.
-    files: ['vite.config.js', 'scripts/**/*.mjs'],
+    files: ['vite.config.js', 'admin/vite.config.js', 'scripts/**/*.mjs'],
     languageOptions: {
       globals: globals.node,
     },
